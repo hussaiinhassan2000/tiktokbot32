@@ -1,14 +1,47 @@
 import requests
 import os
-from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
 
 # التوكن الخاص بالبوت
 TOKEN = os.getenv("TOKEN")
 
+# معرف القناة (استبدله بمعرف قناتك)
+CHANNEL_USERNAME = "@hussaindev"
+
+# دالة للتحقق من عضوية المستخدم في القناة
+async def is_user_member(user_id, context):
+    try:
+        member = await context.bot.get_chat_member(chat_id=CHANNEL_USERNAME, user_id=user_id)
+        return member.status in ["member", "administrator", "creator"]
+    except Exception as e:
+        print(f"Error checking membership: {e}")
+        return False
+
 # دالة لبدء البوت
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text('مرحبًا! أرسل لي رابط فيديو من TikTok وسأقوم بتحميله لك.')
+    user_id = update.message.from_user.id
+    if await is_user_member(user_id, context):
+        await update.message.reply_text('مرحبًا! أرسل لي رابط فيديو من TikTok وسأقوم بتحميله لك.')
+    else:
+        # إنشاء زرين: اشتراك أو متابعة دون اشتراك
+        keyboard = [
+            [InlineKeyboardButton("اشترك في القناة", url=f"https://t.me/{CHANNEL_USERNAME[1:]}")],
+            [InlineKeyboardButton("متابعة دون اشتراك", callback_data="continue_without_sub")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await update.message.reply_text(
+            "مرحبًا! يمكنك الاشتراك في القناة أو متابعة استخدام البوت دون اشتراك.",
+            reply_markup=reply_markup
+        )
+
+# دالة لمعالجة الضغط على الأزرار
+async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    await query.answer()
+
+    if query.data == "continue_without_sub":
+        await query.edit_message_text("لقد اخترت متابعة استخدام البوت دون اشتراك. يمكنك الآن استخدام البوت.")
 
 # دالة لتحميل الفيديو من TikTok باستخدام خدمة بديلة
 def download_tiktok_video(url):
@@ -43,6 +76,9 @@ def main() -> None:
     # تعيين معالجات الأوامر والرسائل
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+
+    # إضافة معالج للأزرار (Inline Keyboard)
+    application.add_handler(CallbackQueryHandler(button_handler))
 
     # بدء تشغيل البوت
     application.run_polling()

@@ -22,12 +22,12 @@ async def is_user_member(user_id, context):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = update.message.from_user.id
     if await is_user_member(user_id, context):
-        await update.message.reply_text('مرحبًا! أرسل لي رابط فيديو من TikTok وسأقوم بتحميله لك.')
+        await update.message.reply_text(' مرحبا دزلي رايط الفيديو وراح احمله الك ❤️‍🔥.')
     else:
         # إنشاء زرين: اشتراك أو متابعة دون اشتراك
         keyboard = [
-            [InlineKeyboardButton("اشترك في القناة", url=f"https://t.me/{CHANNEL_USERNAME[1:]}")],
-            [InlineKeyboardButton("متابعة دون اشتراك", callback_data="continue_without_sub")]
+            [InlineKeyboardButton("🫶اشترك بالقناة", url=f"https://t.me/{CHANNEL_USERNAME[1:]}")],
+            [InlineKeyboardButton("🚬لا تشتراك", callback_data="continue_without_sub")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await update.message.reply_text(
@@ -63,10 +63,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     if 'tiktok.com' in message:
         video_url = download_tiktok_video(message)
         if video_url:
-            await update.message.reply_text(f'جارٍ تنزيل الفيديو من: {video_url}')
+            await update.message.reply_text(f'انتظر جاي ينزل من: {video_url}')
             await context.bot.send_video(chat_id=update.effective_chat.id, video=video_url)
         else:
-            await update.message.reply_text('فشل في تنزيل الفيديو. الرجاء المحاولة مرة أخرى.')
+            await update.message.reply_text(' صار خطأ، عيد المحاولة .')
     else:
         await update.message.reply_text('الرابط الي دزيته خطأ تأكد منه 🙄')
 

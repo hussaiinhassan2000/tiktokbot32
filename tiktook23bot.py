@@ -24,7 +24,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     # التحقق مما إذا كان المستخدم قد اختار "لا تشتراك" مسبقًا
     if context.user_data.get("continue_without_sub", False):
-        await update.message.reply_text("تمام لا تشترك 😒 دز رابط الفيديو يلة")
+        await update.message.reply_text("😃 دز رابط الفيديو انتظرك " )
         return
 
     if await is_user_member(user_id, context):

@@ -22,7 +22,7 @@ async def is_user_member(user_id, context):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = update.message.from_user.id
     if await is_user_member(user_id, context):
-        await update.message.reply_text('مرحبًا! أرسل لي رابط فيديو من TikTok وسأقوم بتحميله لك.')
+        await update.message.reply_text('😃 مرحبا دز رابط فيديو من تيك توك و راح احمله.')
     else:
         # إنشاء زرين: اشتراك أو متابعة دون اشتراك
         keyboard = [
@@ -31,7 +31,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await update.message.reply_text(
-            "مرحبًا! يمكنك الاشتراك في القناة أو متابعة استخدام البوت دون اشتراك.",
+            "مرحبا قناتي الخاصة للبرمجة  اشترك بيها يمكن تفيدك .",
             reply_markup=reply_markup
         )
 
@@ -68,7 +68,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         else:
             await update.message.reply_text('فشل في تنزيل الفيديو. الرجاء المحاولة مرة أخرى.')
     else:
-        await update.message.reply_text('الرجاء إرسال رابط فيديو صحيح من TikTok.')
+        await update.message.reply_text('  الرابط خطأ تأكد منه 🙄 .')
 
 def main() -> None:
     application = Application.builder().token(TOKEN).connect_timeout(60).read_timeout(60).build()

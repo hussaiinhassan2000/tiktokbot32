@@ -1,9 +1,10 @@
 import requests
+import os
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
 # التوكن الخاص بالبوت
-TOKEN = '8059976502:AAELeISGhyKL02Bjw7ozAO2I82Gnwzfx69Y'
+TOKEN = os.getenv("TOKEN")
 
 # دالة لبدء البوت
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

@@ -54,7 +54,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     if query.data == "continue_without_sub":
         # حفظ حالة المستخدم (اختياره "لا تشتراك")
         context.user_data["continue_without_sub"] = True
-        await query.edit_message_text(" دز رابط الفيديو انتظرك 😃")
+        await query.edit_message_text(" 😃 دز رابط الفيديو انتظرك ")
 
 # دالة لتحميل الفيديو من TikTok باستخدام خدمة بديلة
 def download_tiktok_video(url):
@@ -79,11 +79,11 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             await update.message.reply_text(f'انتظر جاي ينزل من: {video_url}')
             await context.bot.send_video(chat_id=update.effective_chat.id, video=video_url)
             # إرسال رسالة بعد تحميل الفيديو
-            await update.message.reply_text("تدلل ياحلو (اشترك بالقناة @hussaindev)")
+            await update.message.reply_text("🫶  هذا الفيديو و تدلل ياحلو  (اشترك بالقناة @hussaindev)")
         else:
             await update.message.reply_text(' صار خطأ، عيد المحاولة .')
     else:
-        await update.message.reply_text('الرابط الي دزيته خطأ تأكد منه 🙄')
+        await update.message.reply_text('🙄 الرابط الي دزيته خطأ تأكد منه')
 
 def main() -> None:
     application = Application.builder().token(TOKEN).connect_timeout(60).read_timeout(60).build()

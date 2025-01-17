@@ -9,6 +9,11 @@ TOKEN = os.getenv("TOKEN")
 # معرف القناة (استبدله بمعرف قناتك)
 CHANNEL_USERNAME = "@hussaindev"
 
+# دالة الترحيب (عند دخول مستخدم جديد)
+async def welcome_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    # إرسال رسالة الترحيب
+    await update.message.reply_text("بوت تحميل من تيك توك بدون علامه مائيه قناة @hussaindev")
+
 # دالة للتحقق من عضوية المستخدم في القناة
 async def is_user_member(user_id, context):
     try:
@@ -24,7 +29,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     # التحقق مما إذا كان المستخدم قد اختار "لا تشتراك" مسبقًا
     if context.user_data.get("continue_without_sub", False):
-        await update.message.reply_text("😃 دز رابط الفيديو انتظرك " )
+        await update.message.reply_text("😃 دز رابط الفيديو انتظرك")
         return
 
     if await is_user_member(user_id, context):
@@ -73,6 +78,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         if video_url:
             await update.message.reply_text(f'انتظر جاي ينزل من: {video_url}')
             await context.bot.send_video(chat_id=update.effective_chat.id, video=video_url)
+            # إرسال رسالة بعد تحميل الفيديو
+            await update.message.reply_text("تدلل ياحلو (اشترك بالقناة @hussaindev)")
         else:
             await update.message.reply_text(' صار خطأ، عيد المحاولة .')
     else:
@@ -80,6 +87,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
 def main() -> None:
     application = Application.builder().token(TOKEN).connect_timeout(60).read_timeout(60).build()
+
+    # إضافة معالج لرسالة الترحيب
+    application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_message))
 
     # تعيين معالجات الأوامر والرسائل
     application.add_handler(CommandHandler("start", start))

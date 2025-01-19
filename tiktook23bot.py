@@ -54,6 +54,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             text=f"📥 مستخدم جديد بدأ استخدام البوت:\n👤 الاسم: {name}\n🆔 يوزر: @{username}\n🔑 معرف: {user_id}\n📊 عدد المستخدمين الآن: {len(unique_users)}"
         )
 
+    # إذا كان المستخدم قد اختار "لا تشتراك" من قبل، لا يظهر له خيار الاشتراك مرة أخرى
+    if context.user_data.get("continue_without_sub", False):
+        await update.message.reply_text("😃 دز رابط الفيديو انتظرك")
+        return
+
     if await is_user_member(user_id, context):
         await update.message.reply_text("مرحبا دزلي رايط الفيديو وراح احمله الك ❤️‍🔥.")
     else:
@@ -74,6 +79,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     await query.answer()
 
     if query.data == "continue_without_sub":
+        # حفظ حالة المستخدم (اختياره "لا تشتراك")
+        context.user_data["continue_without_sub"] = True
         await query.edit_message_text(" 😃 دز رابط الفيديو انتظرك ")
 
 # دالة لتحميل الفيديو من TikTok باستخدام خدمة بديلة

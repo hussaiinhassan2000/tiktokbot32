@@ -9,10 +9,21 @@ TOKEN = os.getenv("TOKEN")
 # معرف القناة (استبدله بمعرف قناتك)
 CHANNEL_USERNAME = "@hussaindev"
 
+# قائمة لحفظ عدد الإحالات
+user_referrals = {}
+
 # دالة الترحيب (عند دخول مستخدم جديد)
 async def welcome_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    # إرسال رسالة الترحيب
-    await update.message.reply_text("بوت تحميل من تيك توك بدون علامه مائيه قناة @hussaindev")
+    for member in update.message.new_chat_members:
+        user_id = member.id
+        username = member.username if member.username else "No username"
+        # إشعار الأدمن
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=f"📢 مستخدم جديد دخل البوت:\n👤 يوزر: @{username}\n🆔 معرف: {user_id}"
+        )
+        # إرسال رسالة الترحيب
+        await update.message.reply_text("بوت تحميل من تيك توك بدون علامه مائيه قناة @hussaindev")
 
 # دالة للتحقق من عضوية المستخدم في القناة
 async def is_user_member(user_id, context):
@@ -26,6 +37,21 @@ async def is_user_member(user_id, context):
 # دالة لبدء البوت
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = update.message.from_user.id
+    username = update.message.from_user.username if update.message.from_user.username else "No username"
+
+    # تحديث عدد الإحالات للمستخدم
+    if "referrer_id" in context.args:
+        referrer_id = int(context.args[0])
+        if referrer_id in user_referrals:
+            user_referrals[referrer_id] += 1
+        else:
+            user_referrals[referrer_id] = 1
+
+        # إشعار الأدمن بعدد الإحالات
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=f"📈 المستخدم {referrer_id} لديه الآن {user_referrals[referrer_id]} إحالة."
+        )
 
     # التحقق مما إذا كان المستخدم قد اختار "لا تشتراك" مسبقًا
     if context.user_data.get("continue_without_sub", False):
